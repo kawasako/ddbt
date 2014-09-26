@@ -1,0 +1,49 @@
+doctype html
+html(ng-app="app")
+  head
+    title= title
+    link(rel='stylesheet', href='/stylesheets/app.css')
+    //- script(src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.0-beta.13/angular.min.js")
+    //- script(src="/socket.io/socket.io.js")
+    //- script(src="/javascripts/timeline.js")
+  body
+  p= title + "の詳細"
+  ul
+    for traffic, i in Traffics
+      li
+        span= traffic.id["S"]
+        //- p= traffic.location.S
+        //- p= new Date(parseInt(traffic.timestamp["N"])).toLocaleDateString()
+  //- table(width="100%")
+  //-   tr.line
+  //-     th time
+  //-     td path
+  //-     td action
+  //-   for item, i in Items
+  //-     tr
+  //-       th= new Date(parseInt(item.timestamp["N"])).toLocaleDateString() + new Date(parseInt(item.timestamp["N"])).toLocaleTimeString()
+  //-       td= item.path["S"]
+  //-       if item.action
+  //-         td
+  //-           for action, i in item.action["SS"]
+  //-             span= action
+  //-       else
+  //-         td
+  //- p
+  //-   a(href="../") 一覧に戻る
+
+
+
+    //- div(ng-controller="exCtr")
+    //-   ul
+    //-     li(ng-repeat="name in names" style="border-left: 15px solid {{name.label_id.S|toColorCode}};")
+    //-       //- p {{name.label_id.S|toColorCode}}
+    //-       p
+    //-         strong
+    //-           a(href="/timeline/{{name.label_id.S}}") {{name.label_id.S}}
+    //-       p {{name.location.S}}
+    //-       time {{name.timestamp.N|date:"M/d hh:mm"}}
+    //-       p {{name.action.S}}
+    //-       p {{name.tags.SS}}
+          //- time new Date({{name.timestamp.N}})
+      //- a.btn(ng-click="load()") もっと見る

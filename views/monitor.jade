@@ -1,0 +1,81 @@
+extends layout
+
+block content
+  p 直近15分以内に行動したユーザー
+  table(width="100%")
+    tr.line
+      th uid
+      td time
+      td path
+    for val, key in Items
+      tr
+        th
+          a(href="/monitor/user/?uid=#{key}")= key
+        td= new Date(parseInt(val[val.length-1].timestamp["N"])).toLocaleDateString() + new Date(parseInt(val[val.length-1].timestamp["N"])).toLocaleTimeString()
+        td= val[val.length-1].path["S"]
+
+  #trafick_map
+    canvas#world(width="900" height="350")
+
+  script(src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js")
+  script(src="//cdnjs.cloudflare.com/ajax/libs/jquery.transit/0.9.9/jquery.transit.min.js")
+  script(src="/socket.io/socket.io.js")
+  script(src="/javascripts/world.js")
+
+  script.
+    var posData = {
+      "/cp/1000/": { "x":50, "y":50 },
+      "/cp/1000/recipe/": { "x":50, "y":125 },
+      "/cp/1000/recipe/hotcake/": { "x":50, "y":200 },
+      "/cp/1000/recipe/frozen-milk/": { "x":250, "y":200 },
+      "/cp/1000/recipe/shiratama/": { "x":450, "y":200 },
+      "/cp/1000/recipe/sponge-cake/": { "x":650, "y":200 },
+      "/cp/1000/terms/": { "x":50, "y":275 },
+      "/cp/1000/education/": { "x":250, "y":275 },
+    }
+    var t = ("abcdefghijklmnopqrstuvwxyz" + "ABCDEFGHIJKLMNOPQRSTUVWXYZ" + "0123456789")
+    var c = "";
+    var cc = "";
+    var socket = io.connect(location.host);
+    var $map = $("#trafick_map");
+    var pos;
+    var action;
+    var $box;
+    // Create color code
+    var parseColor = function(str) {
+      c = "";
+      for(var i=0;i<str.length;i++){ c += t.indexOf(str.charAt(i)); }
+      c = parseInt(c).toString(16);
+      cc = "#";
+      for(var i=0;i<6;i++){ cc += c.charAt(i); }
+      return cc;
+    }
+    // Create region
+    for(var key in posData){
+      $box = $("<p>"+key+"</p>");
+      $box.css(posData[key]);
+      $map.append($box);
+    }
+    // Listen emit
+    socket.on("update", function(data){
+      pos = posData[data[1]];
+      action = data[2] || null;
+      if(TW.particles[data[0]] && pos){
+        TW.particles[data[0]].shift.x = pos.x;
+        TW.particles[data[0]].shift.y = pos.y;
+      }else if(pos){
+        cc = parseColor(data[0]);
+        TW.createParticle(data[0],cc,pos.x,pos.y);
+      }
+      if(action.length > 0) {
+        TW.particles[data[0]].stop().animate({
+          scale: 3
+        }, 200, function(){
+          $(this).animate({
+            scale: 1
+          },200)
+        });
+      }
+    });
+
+

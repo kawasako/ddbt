@@ -1,0 +1,22 @@
+extends layout
+
+block content
+  p= title + "の詳細"
+  table(width="100%")
+    tr.line
+      th time
+      td path
+      td action
+    for item, i in Items
+      tr
+        th= new Date(parseInt(item.timestamp["N"])).toLocaleDateString() + new Date(parseInt(item.timestamp["N"])).toLocaleTimeString()
+        td= item.path["S"]
+        if item.action
+          td
+            for action, i in item.action["SS"]
+              span= action
+        else
+          td
+  p
+    a(href="../") 一覧に戻る
+
